@@ -3,11 +3,11 @@ require ('./config');
 const express = require ('express');
 const bodyParser = require ('body-parser');
 const fileUpload = require ('express-fileupload');
-const http = require ('http');
+const bcrypt = require ('bcrypt');
+
+const { sequelize, User } = require ('./models');
 
 const app = express ();
-
-let server = http.createServer (app);
 
 app.use (fileUpload ());
 app.use (function (req, res, next) {
@@ -30,8 +30,25 @@ app.get ('/', function (req, res) {
   res.send ('Bienvenido API REST');
 });
 
-app.use ("api", require ('./routes'));
+app.use (require ('./routes'));
 
-server.listen (process.env.PORT, function () {
-  console.log (`API Connect port ${process.env.PORT}`);
+sequelize.sync ({force: true}).then (() => {
+  User.bulkCreate ([
+    {
+      name: 'Juan',
+      username: 'juanda',
+      password: bcrypt.hashSync ('123456', 10),
+      role: 'ADMIN',
+    },
+    {
+      name: 'Andrea',
+      username: 'andrea',
+      password: bcrypt.hashSync ('123456', 10),
+      role: 'BARTENDER',
+    },
+  ]);
+
+  app.listen (process.env.PORT, () =>
+    console.log (`API Connect port ${process.env.PORT}`)
+  );
 });
