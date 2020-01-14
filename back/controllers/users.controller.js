@@ -22,9 +22,7 @@ let login = (req, res) => {
           message: 'Usuario o clave invalida',
         });
       }
-
-      console.log ('nuevo', password);
-
+      
       let token = jwt.sign (
         {
           data: {id, name, username, role},
