@@ -32,7 +32,7 @@ app.get ('/', function (req, res) {
 
 app.use (require ('./routes'));
 
-sequelize.sync ({force: true}).then (() => {
+sequelize.sync ({force:true}).then (() => {
   User.bulkCreate ([
     {
       name: 'Juan',

@@ -7,7 +7,10 @@ module.exports = (sequelize, type) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      date: type.DATE,
+      date: {
+        type: type.DATE,
+        defaultValue: type.literal('CURRENT_TIMESTAMP'),
+      },
       tip: type.STRING,
       subtotal: type.FLOAT,
       total: type.FLOAT,
@@ -21,6 +24,7 @@ module.exports = (sequelize, type) => {
     },
     {
       type,
+      engine: 'InnoDB',
     }
   );
 };

@@ -13,7 +13,8 @@ module.exports = (sequelize, type) => {
       role: type.STRING,
     },
     {
-      type
+      type,
+      engine: 'InnoDB',
     }
   );
 };

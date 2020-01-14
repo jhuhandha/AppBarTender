@@ -13,6 +13,7 @@ module.exports = (sequelize, type) => {
     },
     {
       type,
+      engine: 'InnoDB',
     }
   );
 };

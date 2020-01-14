@@ -4,7 +4,7 @@ let auth = (req, res, next) => {
 
     let token = req.get("Authorization");
 
-    jwt.verify(token, process.env.SECRET, (err, usuario)=>{
+    jwt.verify(token, process.env.SECRET, (err, user)=>{
 
         if(err){
             return res.status(500).json({
@@ -13,13 +13,34 @@ let auth = (req, res, next) => {
             });
         }
 
-        req.usuario = usuario.data;
+        req.user = user.data;
+
+        next();
+    });
+}
+
+let auth_image = (req, res, next) => {
+
+    let token = req.query.Authorization;
+
+    jwt.verify(token, process.env.SECRET, (err, user)=>{
+
+        if(err){
+            return res.status(500).json({
+                ok: false,
+                men: "Token no valido"
+            });
+        }
+
+        req.user = user.data;
 
         next();
     });
 }
 
 
+
 module.exports = {
-    auth
+    auth,
+    auth_image
 }
