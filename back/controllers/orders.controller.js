@@ -1,5 +1,7 @@
 const {Order, Drink, OrderHasDrink, sequelize} = require ('./../models');
 
+const {validationResult} = require ('express-validator');
+
 const index = (req, res) => {
   Order.findAll ({
     include: [{model: OrderHasDrink, include: [Drink]}],
@@ -13,12 +15,18 @@ const index = (req, res) => {
     .catch (err =>
       res.status (500).json ({
         ok: false,
-        err,
+        message : err.message,
       })
     );
 };
 
 const save = async (req, res) => {
+
+  const errors = validationResult (req);
+  if (!errors.isEmpty ()) {
+    return res.status (422).json ({ok: false, err: errors.array ()});
+  }
+
   let transaction;
   try {
     transaction = await sequelize.transaction ();
@@ -26,11 +34,9 @@ const save = async (req, res) => {
     let user_id = req.user.id;
 
     let {tip, subtotal, total} = req.body;
-    let order_has_drink = req.body.orders;
+    let order_has_drink = req.body.drinks;
 
     let order = await Order.create ({tip, subtotal, total, user_id});
-
-    console.log ('order', order);
 
     await OrderHasDrink.bulkCreate ([
       ...order_has_drink.map (e => {
@@ -47,7 +53,7 @@ const save = async (req, res) => {
     if (transaction) await transaction.rollback ();
     return res.status (500).json ({
       ok: false,
-      err: ex.message,
+      message: ex.message,
     });
   }
 };

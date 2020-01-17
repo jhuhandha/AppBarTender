@@ -1,6 +1,8 @@
-const {Drink} = require ('./../models');
 const path = require ('path');
 const fs = require ('fs');
+const {validationResult} = require ('express-validator');
+
+const {Drink} = require ('./../models');
 
 const index = (req, res) => {
   Drink.findAll ()
@@ -13,7 +15,7 @@ const index = (req, res) => {
     .catch (err =>
       res.status (500).json ({
         ok: false,
-        err,
+        message : err.message,
       })
     );
 };
@@ -24,7 +26,13 @@ const showImage = (req, res) => {
 };
 
 const save = (req, res) => {
-  if (!req.files) return res.status (400).send ('No files were uploaded.');
+  const errors = validationResult (req);
+  if (!errors.isEmpty ()) {
+    return res.status (422).json ({ok:false, err: errors.array ()});
+  }
+
+  if (!req.files)
+    return res.status (400).json ({ok: false, err: 'No files were uploaded.'});
 
   let image = req.files.image;
 
@@ -62,7 +70,7 @@ const edit = (req, res) => {
     .catch (err =>
       res.status (500).json ({
         ok: false,
-        err,
+        message : err.message,
       })
     );
 };
@@ -75,15 +83,14 @@ const updateImage = (req, callback) => {
 
   if (req.files) {
     Drink.findByPk (req.params.id).then (drink => {
-        console.log(drink)
+      console.log (drink);
       fs.unlinkSync (`uploads/drinks/${drink.icon}`);
 
       let image = req.files.image;
       image.mv (`uploads/drinks/${image.name}`, err => {
         if (err) return res.status (500).send (err);
-        callback({...data, icon : image.name});
+        callback ({...data, icon: image.name});
       });
-
     });
   } else {
     callback (data);
@@ -91,6 +98,11 @@ const updateImage = (req, callback) => {
 };
 
 const modify = (req, res) => {
+  const errors = validationResult (req);
+  if (!errors.isEmpty ()) {
+    return res.status (422).json ({err: errors.array ()});
+  }
+
   updateImage (req, data => {
     Drink.update (data, {
       where: {

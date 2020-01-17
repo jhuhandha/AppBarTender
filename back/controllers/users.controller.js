@@ -10,7 +10,7 @@ let login = (req, res) => {
       if (!user) {
         return res.status (404).json ({
           ok: false,
-          message: 'Usuario o clave invalida',
+          message: 'username or password incorrect',
         });
       }
 
@@ -19,7 +19,7 @@ let login = (req, res) => {
       if (!bcrypt.compareSync (req.body.password, password)) {
         return res.status (404).json ({
           ok: false,
-          message: 'Usuario o clave invalida',
+          message: 'username or password incorrect',
         });
       }
       
@@ -42,7 +42,7 @@ let login = (req, res) => {
     .catch (err =>
       res.status (500).json ({
         ok: false,
-        err,
+        message : err.message
       })
     );
 };
