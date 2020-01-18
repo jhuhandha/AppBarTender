@@ -21,7 +21,7 @@ let auth = (req, res, next) => {
 
 let auth_image = (req, res, next) => {
 
-    let token = req.query.Authorization;
+    let token = req.query.token;
 
     jwt.verify(token, process.env.SECRET, (err, user)=>{
 

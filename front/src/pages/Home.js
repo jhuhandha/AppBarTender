@@ -8,8 +8,8 @@ export class Home extends Component {
 
     render() {
         return (
-            <div>
-                <h1>{this.props.role}</h1>
+            <div style={{display:'flex', flex: 1, justifyContent:'center', alignItems:'center', height: 500}}>
+                <h3 className="text-muted" >Comienza a realizar pedidios con un solo click</h3>
             </div>
         )
     }

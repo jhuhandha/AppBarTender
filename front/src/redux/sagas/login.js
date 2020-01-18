@@ -31,6 +31,4 @@ export function* fetchLogin({ payload }) {
             payload: response.data
         });
     }
-
-
 }

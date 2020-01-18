@@ -25,7 +25,7 @@ export default (props) => {
                     <NavbarToggler onClick={toggle} />
                     <Collapse isOpen={isOpen} navbar>
                         <Nav className="mr-auto" navbar>
-                            {props.menu.map(e => <NavItem>
+                            {props.menu.map((e, i) => <NavItem key={i}>
                                 <Link className="nav-link" style={{ color: 'white' }} to={e.path}>{e.name}</Link>
                             </NavItem>)}
                         </Nav>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Spinner } from 'reactstrap';
-import Notifications, {notify} from 'react-notify-toast';
+import { notify } from 'react-notify-toast';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
@@ -17,6 +17,7 @@ const authSchema = Yup.object().shape({
         .required('The password field is required')
 });
 
+
 export class Login extends Component {
 
     constructor(props) {
@@ -24,21 +25,20 @@ export class Login extends Component {
     }
 
     componentDidUpdate() {
-        if(this.props.payload){
-            if(this.props.payload.ok){
+        if (this.props.payload) {
+            if (this.props.payload.ok) {
                 this.props.history.push('/home');
-            }else{
+            } else {
                 notify.show(this.props.payload.message, 'error');
             }
         }
-        if(this.props.error){
+        if (this.props.error) {
             notify.show(this.props.error.message, 'error');
         }
     }
 
     render() {
         return (<section className="login-block">
-            <Notifications />
             <div className="_container container">
                 <div className="row">
                     <div className="col-md-4 login-sec">
@@ -72,7 +72,7 @@ export class Login extends Component {
                                         {!this.props.loading ?
                                             <button type="submit" className="btn btn-login float-right">Login</button>
                                             :
-                                            <Spinner type="grow" color="primary" />
+                                            <Spinner type="grow" color="primary" className="float-right" />
                                         }
 
                                     </div>

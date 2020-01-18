@@ -42,6 +42,10 @@ export default class BaseHttpService {
         localStorage.removeItem('accesToken')
     }
 
+    getBaseUrl(){
+        return this.BASE_URL;
+    }
+
     get(endpoint, options = {}) {
         Object.assign(options, this._getAxiosOptions());
         return axios.get(`${this.BASE_URL}/${endpoint}`, options)
