@@ -13,6 +13,7 @@ export function* fetchValid({ payload }) {
         let datos = JSON.parse(window.localStorage.order_drink);
 
         if (datos) {
+            console.log("datos", datos)
             yield put({
                 type: RECEIVED_ADD_ORDER,
                 payload: [...datos],
@@ -22,15 +23,41 @@ export function* fetchValid({ payload }) {
     }
 }
 
+export function* fetchClear() {
+
+    window.localStorage.order_drink = "";
+
+    yield put({
+        type: RECEIVED_ADD_ORDER,
+        payload: null
+    });
+}
+
+export function* fetchUpdateAmount({ index, amount }) {
+    let items = yield select(getOrderDrink);
+
+    if (index >= 0) {
+        items[index].amount = parseInt(amount);
+
+        window.localStorage.order_drink = JSON.stringify(items);
+
+        yield put({
+            type: RECEIVED_ADD_ORDER,
+            payload: [...items]
+        });
+    }
+}
+
 export function* fetchAdd({ payload }) {
     let items = yield select(getOrderDrink);
 
-    let filter = items.findIndex(e => e.drink.value == payload.drink.value);
+    let filter = items ? items.findIndex(e => e.drink.value == payload.drink.value) : -1;
 
     if (filter != -1) {
         items[filter].amount += payload.amount;
         items[filter].subtotal = items[filter].amount * payload.drink.unit_price;
     } else {
+        items = items || [];
         items.push(payload);
     }
 
@@ -57,4 +84,13 @@ export function* fetchDelete({ id }) {
         type: RECEIVED_ADD_ORDER,
         payload: [...items]
     });
+}
+
+
+export function* fetchSave({ payload }) {
+
+}
+
+export function* fetchIndex() {
+
 }

@@ -20,26 +20,29 @@ const authSchema = Yup.object().shape({
 export default function FormOrder() {
 
     const dispatch = useDispatch();
+
     let [unit_price, setUnitPrice] = useState(0);
+    let [initialValue, setInitialValue]=useState({ drink: '', amount: 1 });
+    const drinks = useSelector(state => state.drink.drinks);
 
     useEffect(() => {
         dispatch(fetchIndex());
     }, [])
 
-    const drinks = useSelector(state => state.drink.drinks);
     return (
         <div>
             <Formik
                 className="login-form"
-                initialValues={{ drink: '', amount: 1 }}
+                initialValues={initialValue}
                 validationSchema={authSchema}
-                onSubmit={values => {
+                onSubmit={(values, {resetForm}) => {
                     let subtotal = parseInt(values.amount)*parseInt(values.drink.unit_price);
                     dispatch(fetchAdd({...values, subtotal}));
-                    notify.show('Drink add to order');
+                    window.document.querySelector("#amount").value = 1;
+                    notify.show('Drink add to order', 'success');
                 }}
             >
-                {({ errors, touched, setFieldValue }) => (
+                {({ errors, touched, setFieldValue, resetForm }) => (
                     <Form>
                         <div className="row">
                             <div className="form-group col-4">
@@ -47,6 +50,7 @@ export default function FormOrder() {
                                 <Select
                                     name="drink"
                                     id="drink"
+                                    defaultValue=""
                                     options={drinks ? [...drinks.drinks.map(e => ({ value: e.id, label: e.name, icon: e.icon, unit_price: e.unit_price }))] : []}
                                     onChange={(e) => {
                                         setFieldValue("drink", e);

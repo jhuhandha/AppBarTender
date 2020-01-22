@@ -61,6 +61,11 @@ export default class BaseHttpService {
         return axios.patch(`${this.BASE_URL}/${endpoint}`, data, options)
     }
 
+    put(endpoint, data = {}, options = {}) {
+        Object.assign(options, this._getAxiosOptions());
+        return axios.put(`${this.BASE_URL}/${endpoint}`, data, options)
+    }
+
     delete(endpoint, options = {}) {
         Object.assign(options, this._getAxiosOptions());
         return axios.delete(`${this.BASE_URL}/${endpoint}`, options)

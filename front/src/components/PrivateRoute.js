@@ -10,8 +10,8 @@ import './../styles/home.css';
 
 const MENU = [
   { name: "Home", path: "/home", role: ["ADMIN", "BARTENDER"] },
-  { name: "Order", path: "/order", role: ["ADMIN", "BARTENDER"] },
   { name: "Drink", path: "/drink", role: ["ADMIN"] },
+  { name: "Order", path: "/order", role: ["ADMIN", "BARTENDER"] },
   { name: "Order History", path: "/order/history", role: ["ADMIN"] },
 ];
 

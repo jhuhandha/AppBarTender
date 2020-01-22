@@ -6,7 +6,10 @@ export const FETCH_ADD_ORDER = 'FETCH_ADD_ORDER';
 export const RECEIVED_ADD_ORDER = 'RECEIVED_ADD_ORDER';
 export const FETCH_DELETE_ORDER = 'FETCH_DELETE_ORDER';
 export const FETCH_VALID_ORDER = 'FETCH_VALID_ORDER';
+export const FETCH_UPDATE_AMOUNT_ORDER = 'FETCH_UPDATE_AMOUNT_ORDER';
+export const FETCH_DELETE_DRINK_ORDER = 'FETCH_DELETE_DRINK_ORDER';
 export const RECEIVED_VALID_ORDER = 'RECEIVED_VALID_ORDER';
+export const FETCH_CLEAR_ORDER = 'FETCH_CLEAR_ORDER';
 export const ERROR = 'ERROR';
 
 export const fetchIndex = () => ({type: FETCH_INDEX_ORDER});
@@ -14,3 +17,5 @@ export const fetchSave = data => ({type: FETCH_SAVE_ORDER, payload: data});
 export const fetchAdd = data => ({type: FETCH_ADD_ORDER, payload: data});
 export const fetchDelete = id => ({type: FETCH_DELETE_ORDER, id});
 export const fetchValid = () => ({type: FETCH_VALID_ORDER});
+export const fetchClear = () => ({type: FETCH_CLEAR_ORDER});
+export const fetchUpdateAmount = (index, amount) => ({type: FETCH_UPDATE_AMOUNT_ORDER, index, amount});

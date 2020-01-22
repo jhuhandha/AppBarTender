@@ -29,13 +29,15 @@ export default (props) => {
                 initialValues={props.initialValues}
                 validationSchema={drinkSchema}
                 enableReinitialize={true}
-                onSubmit={values => {
+                onSubmit={(values, {resetForm}) => {
 
                     const data = new FormData();
                     data.append('name', values.name);
                     data.append('image', values.icon);
                     data.append('unit_price', values.unit_price);
 
+                    resetForm();
+                    
                     if (!props.initialValues.edit) {
                         dispatch(fetchSave(data));
                     }else{

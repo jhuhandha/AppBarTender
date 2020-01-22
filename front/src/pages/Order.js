@@ -1,27 +1,74 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import SweetAlert from 'react-bootstrap-sweetalert';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-import { fetchValid } from './../redux/actions/order'
+import { fetchValid, fetchClear } from './../redux/actions/order'
 
 import FormOrder from './../components/FormOrder';
 import TableOrder from './../components/TableOrder';
 
 export class Order extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        props.fetchValid();
+        this.state = {
+            show: false,
+            showDiscard: false,
+            modal: false
+        }
+
     }
 
-    componentDidMount(){
-        if(this.props.storage){
-            
-        }
+    componentDidMount() {
+        this.props.fetchValid();
+        setTimeout(() => {
+            if (this.props.storage) {
+                this.setState({ show: true });
+            }
+        }, 1000)
     }
+
+    toggle = () => this.setState({modal:!this.state.modal});
 
     render() {
         return (
             <div>
+                <Modal isOpen={this.state.modal} toggle={this.toggle}>
+                    <ModalHeader toggle={this.toggle}>Tip</ModalHeader>
+                    <ModalBody>
+                        
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                    </ModalFooter>
+                </Modal>
+
+                <SweetAlert
+                    show={this.state.show}
+                    warning
+                    showCancel
+                    confirmBtnText="Yes"
+                    confirmBtnBsStyle="success"
+                    title="!Espera!"
+                    onConfirm={() => { this.setState({ show: false }) }}
+                    onCancel={() => { this.props.fetchClear(); this.setState({ show: false }) }}
+                >
+                    Hay una orden almacenada de forma temporal, ¿desea continuar con ella?
+                </SweetAlert>
+
+                <SweetAlert
+                    show={this.state.showDiscard}
+                    warning
+                    showCancel
+                    confirmBtnText="Yes"
+                    confirmBtnBsStyle="success"
+                    title="!!"
+                    onConfirm={() => { this.props.fetchClear(); this.setState({ showDiscard: false }) }}
+                    onCancel={() => { this.setState({ showDiscard: false }) }}
+                >
+                    ¿Are you sure you want to discard this order?
+                </SweetAlert>
                 <h2>Orders</h2>
                 <FormOrder />
                 <br />
@@ -29,6 +76,15 @@ export class Order extends Component {
                 <div className="row">
                     <div className="col-12">
                         <TableOrder />
+                    </div>
+                </div>
+                <br />
+                <div className="row justify-content-between">
+                    <div className="col-6 col-md-4">
+                        <button disabled={this.props.drinks_order && this.props.drinks_order.length > 0 ? false : true} type="button" onClick={() => this.setState({ showDiscard: true })} className="btn btn-dark btn-block">Discard Order</button>
+                    </div>
+                    <div className="col-6 col-md-6">
+                        <button disabled={this.props.drinks_order && this.props.drinks_order.length > 0 ? false : true} type="button" onClick={() => this.setState({ modal: true })} className="btn btn-success btn-block">Finish Order</button>
                     </div>
                 </div>
             </div>
@@ -39,13 +95,15 @@ export class Order extends Component {
 
 const mapStateToProps = state => {
     return {
-        storage: state.order.storage
+        storage: state.order.storage,
+        drinks_order: state.order.order_drink
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchValid: () => dispatch(fetchValid())
+        fetchValid: () => dispatch(fetchValid()),
+        fetchClear: () => dispatch(fetchClear()),
     }
 }
 

@@ -28,8 +28,8 @@ function App () {
             <Login />
           </Route>
           <PrivateRoute path="/home" role={["ADMIN", "BARTENDER"]} _component={Home}/>
-          <PrivateRoute path="/order" role={["ADMIN", "BARTENDER"]} _component={Order}/>
           <PrivateRoute path="/drink" role={["ADMIN"]} _component={Drink}/>
+          <PrivateRoute path="/order" role={["ADMIN", "BARTENDER"]} _component={Order}/>
           <PrivateRoute path="/order/history" role={["ADMIN"]} _component={OrderHistory}/>
           <Route component={NoMatch} />
         </Switch>
