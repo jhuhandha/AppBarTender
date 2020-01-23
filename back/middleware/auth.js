@@ -7,7 +7,7 @@ let auth = (req, res, next) => {
     jwt.verify(token, process.env.SECRET, (err, user)=>{
 
         if(err){
-            return res.status(500).json({
+            return res.status(401).json({
                 ok: false,
                 men: "Token no valido"
             });
@@ -26,7 +26,7 @@ let auth_image = (req, res, next) => {
     jwt.verify(token, process.env.SECRET, (err, user)=>{
 
         if(err){
-            return res.status(500).json({
+            return res.status(401).json({
                 ok: false,
                 men: "Token no valido"
             });
