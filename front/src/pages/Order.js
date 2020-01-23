@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { withRouter } from 'react-router-dom';
 
 import { fetchValid, fetchClear } from './../redux/actions/order'
 
 import FormOrder from './../components/FormOrder';
 import TableOrder from './../components/TableOrder';
+import ModalTipDrink from './../components/ModalTipDrink';
 
 export class Order extends Component {
 
@@ -15,6 +17,7 @@ export class Order extends Component {
         this.state = {
             show: false,
             showDiscard: false,
+            total: 0,
             modal: false
         }
 
@@ -28,27 +31,24 @@ export class Order extends Component {
             }
         }, 1000)
     }
-
-    toggle = () => this.setState({modal:!this.state.modal});
+    
+    componentDidUpdate(){
+        if(this.props.payload){
+            this.props.history.push("/order/result");
+        }
+    }
+    
+    toggle = () => this.setState({modal:!this.state.modal})
 
     render() {
         return (
             <div>
-                <Modal isOpen={this.state.modal} toggle={this.toggle}>
-                    <ModalHeader toggle={this.toggle}>Tip</ModalHeader>
-                    <ModalBody>
-                        
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-                    </ModalFooter>
-                </Modal>
-
                 <SweetAlert
                     show={this.state.show}
                     warning
                     showCancel
                     confirmBtnText="Yes"
+                    cancelBtnText="No"
                     confirmBtnBsStyle="success"
                     title="!Espera!"
                     onConfirm={() => { this.setState({ show: false }) }}
@@ -62,6 +62,7 @@ export class Order extends Component {
                     warning
                     showCancel
                     confirmBtnText="Yes"
+                    cancelBtnText="No"
                     confirmBtnBsStyle="success"
                     title="!!"
                     onConfirm={() => { this.props.fetchClear(); this.setState({ showDiscard: false }) }}
@@ -69,6 +70,7 @@ export class Order extends Component {
                 >
                     ¿Are you sure you want to discard this order?
                 </SweetAlert>
+
                 <h2>Orders</h2>
                 <FormOrder />
                 <br />
@@ -84,10 +86,20 @@ export class Order extends Component {
                         <button disabled={this.props.drinks_order && this.props.drinks_order.length > 0 ? false : true} type="button" onClick={() => this.setState({ showDiscard: true })} className="btn btn-dark btn-block">Discard Order</button>
                     </div>
                     <div className="col-6 col-md-6">
-                        <button disabled={this.props.drinks_order && this.props.drinks_order.length > 0 ? false : true} type="button" onClick={() => this.setState({ modal: true })} className="btn btn-success btn-block">Finish Order</button>
+                        <button disabled={this.props.drinks_order && this.props.drinks_order.length > 0 ? false : true} type="button" onClick={() => this.setState({ modal: true, total: this.props.drinks_order ? this.props.drinks_order.map(e => e.subtotal).reduce((a, v) => { return a + v }) : 0 })} className="btn btn-success btn-block">Finish Order</button>
                     </div>
                 </div>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} backdrop='static'>
+                    <ModalHeader toggle={this.toggle}>Tip</ModalHeader>
+                    <ModalBody>
+                        <ModalTipDrink total={this.state.total} />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                    </ModalFooter>
+                </Modal>
             </div>
+
         )
     }
 }
@@ -96,7 +108,8 @@ export class Order extends Component {
 const mapStateToProps = state => {
     return {
         storage: state.order.storage,
-        drinks_order: state.order.order_drink
+        drinks_order: state.order.order_drink,
+        payload: state.order.payload,
     }
 }
 
@@ -107,4 +120,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Order)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Order))

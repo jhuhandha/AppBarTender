@@ -38,7 +38,7 @@ export default function FormOrder() {
                 onSubmit={(values, {resetForm}) => {
                     let subtotal = parseInt(values.amount)*parseInt(values.drink.unit_price);
                     dispatch(fetchAdd({...values, subtotal}));
-                    window.document.querySelector("#amount").value = 1;
+                    window.document.querySelector("#amount").value = "1";
                     notify.show('Drink add to order', 'success');
                 }}
             >
@@ -56,6 +56,7 @@ export default function FormOrder() {
                                         setFieldValue("drink", e);
                                         setUnitPrice(e.unit_price);
                                         window.document.querySelector("#amount").focus()
+                                        window.document.querySelector("#amount").value = "1";
                                     }}
                                 />
                                 {errors.drink && touched.drink ? (
@@ -63,8 +64,8 @@ export default function FormOrder() {
                                 ) : null}
                             </div>
                             <div className="form-group col-4">
-                                <label  >Amount</label>
-                                <Field  type="number" name="amount" id="amount" min="1" className="form-control" />
+                                <label>Amount</label>
+                                <Field type="number" name="amount" id="amount" min="1" className="form-control" />
                                 {errors.amount && touched.amount ? (
                                     <p className="text-danger">{errors.amount}</p>
                                 ) : null}

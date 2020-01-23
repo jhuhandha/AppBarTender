@@ -8,12 +8,12 @@ export default class BaseHttpService {
     constructor() {
         axios.interceptors.response.use(function (response) {
             return response;
-        }, function (error) {
-            if (401 === error.response.status) {
-                this.removeToken();
-                window.location = '/login';
+        }, function ({response}) {
+            if (response.statusText == "Unauthorized") {
+                localStorage.removeItem('accesToken')
+                window.location.href = '/';
             } else {
-                return Promise.reject(error);
+                return Promise.reject(response);
             }
         });
         this._accesToken = this.getToken();
